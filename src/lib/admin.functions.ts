@@ -159,13 +159,13 @@ export const decideTransaction = createServerFn({ method: "POST" })
       last_action_at: now,
       workflow_stage: data.status,
     };
-    if (data.status === "confirmed") patch.confirmed_at = now;
+    if (data.status === "confirmed") patch['confirmed_at'] = now;
     if (data.status === "rejected") {
-      patch.rejected_at = now;
-      patch.rejection_reason = data.reason ?? null;
+      patch['rejected_at'] = now;
+      patch['rejection_reason'] = data.reason ?? null;
     }
-    if (data.status === "cancelled") patch.cancelled_at = now;
-    if (data.status === "under_review") patch.first_reviewed_at = now;
+    if (data.status === "cancelled") patch['cancelled_at'] = now;
+    if (data.status === "under_review") patch['first_reviewed_at'] = now;
 
     const { error } = await db.from("transactions").update(patch as never).eq("id", data.id);
     if (error) throw new Error(error.message);
@@ -489,8 +489,8 @@ export const saveSettlement = createServerFn({ method: "POST" })
       failure_reason: data.failure_reason ?? null,
       admin_id: admin.id,
     };
-    if (data.status === "executed") payload.executed_at = now;
-    if (data.status === "completed") payload.completed_at = now;
+    if (data.status === "executed") payload['executed_at'] = now;
+    if (data.status === "completed") payload['completed_at'] = now;
     const res = data.id
       ? await db.from("bank_settlements").update(payload as never).eq("id", data.id)
       : await db.from("bank_settlements").insert(payload as never);
